@@ -2,8 +2,6 @@
 
 [![Run Status](https://api.shippable.com/projects/58f6fcddd1780a07007bba3f/badge?branch=master)](https://app.shippable.com/github/devops-recipes/deploy-ecs-basic) [![Coverage Badge](https://api.shippable.com/projects/58f6fcddd1780a07007bba3f/coverageBadge?branch=master)](https://app.shippable.com/github/devops-recipes/deploy-ecs-basic)
 
-![AyeAye](https://github.com/devops-recipes/deploy-ecs-basic/blob/master/public/resources/images/captain.png)
-
 This is  Node JS microservice with unit tests and coverage reports using mocha and istanbul. It also does a docker build once CI passes and then pushes the image to Amazon EC2 Container Registry
 
 ## Setup
