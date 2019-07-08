@@ -1,4 +1,4 @@
-# Language setting http://docs.shippable.com/ci/languages/node/
+
 language: node_js
 
 # # use this to control what branches get built.
@@ -16,7 +16,7 @@ env:
     - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
     - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/tests
     - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/.bin/
-    - ECR_REPO=660850653279.dkr.ecr.us-east-1.amazonaws.com/deploy-ecs-basic
+    - ECR_REPO=300519856611.dkr.ecr.us-east-2.amazonaws.com/pichincha
 
 build:
 
@@ -53,7 +53,7 @@ resources:
     type: image
     integration: dr-aws-keys
     pointer:
-      sourceName: "660850653279.dkr.ecr.us-east-1.amazonaws.com/deploy-ecs-basic"
+      sourceName: "300519856611.dkr.ecr.us-east-2.amazonaws.com/pichincha"
     seed:
       versionName: "latest"
 
@@ -82,7 +82,7 @@ resources:
     type: cluster
     integration: dr-aws-keys
     pointer:
-      sourceName : "deploy-ecs-basic" #name of the cluster to which we are deploying
+      sourceName : "deploy-ecs-basic"
       region: "us-east-1"
 
 

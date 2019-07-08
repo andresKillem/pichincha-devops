@@ -17,9 +17,7 @@ Log in to [Shippable](wwww.shippable.com) and follow instructions in the docs to
 ### 2. Update YAML
 
 Fork this repository to your account. 
-
 All configuration is stored in the **shippable.yml** file at the root of this repository. You will need to make the following updates to customize the standard YAML included with this example:
-
 * Change ECR_REPO (line 19) to point to your ECR repo. Please make sure the repo already exists on ECR.
 * Update the `integrationName`(47) in the integration.hub section with the name of your AWS integration.
 * Under `resources`, update the deploy-ecs-basic-image resource with the following:
