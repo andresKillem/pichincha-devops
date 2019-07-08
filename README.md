@@ -1,47 +1,75 @@
-# Banco Pichincha Assessment DevOps : Node.js application to Amazon ECS
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+</p>
 
-[![Run Status](https://api.shippable.com/projects/58f6fcddd1780a07007bba3f/badge?branch=master)](https://app.shippable.com/github/devops-recipes/deploy-ecs-basic) [![Coverage Badge](https://api.shippable.com/projects/58f6fcddd1780a07007bba3f/coverageBadge?branch=master)](https://app.shippable.com/github/devops-recipes/deploy-ecs-basic)
+[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
+[travis-url]: https://travis-ci.org/nestjs/nest
+[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
+[linux-url]: https://travis-ci.org/nestjs/nest
+  
+  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
+<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
+<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
+<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
+<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
+  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-This is  Node JS microservice with unit tests and coverage reports using mocha and istanbul. It also does a docker build once CI passes and then pushes the image to Amazon EC2 Container Registry
+## Description
 
-## Setup
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-To run this microservice architecture, you must first perform some setup steps to customize **shippable.yml** to point to your ECR and ECS accounts. 
+## Installation
 
-### 1. Create an AWS integration
+```bash
+$ npm install
+```
 
-In order to allow Shippable to connect to your AWS services, you need to add an [integration](http://docs.shippable.com/platform/integration/overview/) through the Shippable UI. This integration will be referenced in the YAML as needed.
+## Running the app
 
-Log in to [Shippable](wwww.shippable.com) and follow instructions in the docs to [create an AWS keys integration](http://docs.shippable.com/platform/integration/aws-keys/). Note down the name of the integration you created.
+```bash
+# development
+$ npm run start
 
-### 2. Update YAML
+# watch mode
+$ npm run start:dev
 
-Fork this repository to your account. 
-All configuration is stored in the **shippable.yml** file at the root of this repository. You will need to make the following updates to customize the standard YAML included with this example:
-* Change ECR_REPO (line 19) to point to your ECR repo. Please make sure the repo already exists on ECR.
-* Update the `integrationName`(47) in the integration.hub section with the name of your AWS integration.
-* Under `resources`, update the deploy-ecs-basic-image resource with the following:
-   * `integration` should point to your AWS integration name
-   * `sourceName` should point to the ECR repo
-* Under `resources`, update the deploy-ecs-basic-ecs-cluster resource with the following:
-   * `integration` should point to your AWS integration name
-   * `sourceName` should point to your ECS cluster name. Please make sure the cluster already exists.
-   * `region` should point to the region of your ECS cluster.
+# production mode
+$ npm run start:prod
+```
 
-Commit your changes to source control.
+## Test
 
-## Run CI: Run some tests, build a Docker image and push to ECR
+```bash
+# unit tests
+$ npm run test
 
-* [Enable your project for CI on Shippable](http://docs.shippable.com/ci/enable-project/) 
-* Commit a small change to your repository (add a space or character in readme file). This will automatically trigger a build on Shippable. You can also trigger a manual build through the Shippable UI.
-* The build will build your Docker image and push it to ECR.
+# e2e tests
+$ npm run test:e2e
 
-## Enable the CD workflow: Deploy container to ECS
+# test coverage
+$ npm run test:cov
+```
 
-* Next, you need to enable config to deploy your Docker container to ECS. This logic is contained in the `jobs` and `resources` sections of your YAML, which is known as Assembly Line config in Shippable.
-* [Add your Assembly Line](http://docs.shippable.com/platform/tutorial/workflow/add-assembly-line/). This will ensure that your `jobs` and `resources` sections are read.
-* Rerun your CI job with another commit to the repository or with a manual build. The workflow should now trigger end to end and your container should be deployed to ECS.
+## Support
 
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
+## Stay in touch
 
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
+## License
+
+  Nest is [MIT licensed](LICENSE).
