@@ -1,0 +1,109 @@
+# Language setting http://docs.shippable.com/ci/languages/node/
+language: node_js
+
+# # use this to control what branches get built.
+# # http://docs.shippable.com/ci/advancedOptions/branches/
+# branches:
+#   only:
+#     - master
+
+
+# using pre-defined build variables
+# full list http://docs.shippable.com/ci/advancedOptions/environmentVariables/
+env:
+  global:
+    - TEST_RESULTS_DIR=$SHIPPABLE_REPO_DIR/shippable/testresults
+    - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
+    - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/tests
+    - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/.bin/
+    - ECR_REPO=660850653279.dkr.ecr.us-east-1.amazonaws.com/deploy-ecs-basic
+
+build:
+
+  # http://docs.shippable.com/ci/shippableyml/#ci
+  ci:
+    # npm mirrors can sometimes be flacky, better to use shippable_retry
+    # http://docs.shippable.com/ci/advancedOptions/retry/
+    - shippable_retry npm install
+    - mkdir -p $TEST_RESULTS_DIR && mkdir -p $CODE_COVERAGE_DIR
+    - pushd $TESTS_LOC_DIR
+    - $MOD_LOC/mocha --recursive "$TESTS_LOC_DIR/**/*.spec.js" -R mocha-junit-reporter --reporter-options mochaFile=$TEST_RESULTS_DIR/testresults.xml
+    - $MOD_LOC/istanbul --include-all-sources cover -root "$SHIPPABLE_REPO_DIR/routes" $SHIPPABLE_REPO_DIR/node_modules/mocha/bin/_mocha -- -R spec-xunit-file --recursive "$TESTS_LOC_DIR/**/*.spec.js"
+    - $MOD_LOC/istanbul report cobertura --dir $CODE_COVERAGE_DIR
+    - popd
+
+  # http://docs.shippable.com/ci/shippableyml/#post_ci
+  post_ci:
+    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
+    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
+    - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
+
+# Integrations are used to connect external resources to CI
+# http://docs.shippable.com/integrations/overview/
+integrations:
+  # adding awsKeys integration so that credentials are available to CI Job
+  # http://docs.shippable.com/platform/integration/aws-keys/
+  hub:
+    - integrationName: dr-aws-keys
+      type: amazonKeys
+
+
+resources:
+  - name: deploy-ecs-basic-image
+    type: image
+    integration: dr-aws-keys
+    pointer:
+      sourceName: "660850653279.dkr.ecr.us-east-1.amazonaws.com/deploy-ecs-basic"
+    seed:
+      versionName: "latest"
+
+  - name: deploy-ecs-basic-params
+    type: params
+    version:
+      params:
+        PORT: 80
+        ENVIRONMENT: "dev"
+
+  - name: deploy-ecs-basic-docker-options
+    type: dockerOptions
+    versionTemplate:
+      linuxParameters:
+        initProcessEnabled: true
+      memory: 100
+      portMappings:
+        - 80:80
+
+  - name: deploy-ecs-basic-replicas
+    type: replicas
+    version:
+      count: 1
+
+  - name: deploy-ecs-basic-ecs-cluster
+    type: cluster
+    integration: dr-aws-keys
+    pointer:
+      sourceName : "deploy-ecs-basic" #name of the cluster to which we are deploying
+      region: "us-east-1"
+
+
+jobs:
+  - name: deploy-ecs-basic_runCI
+    type: runCI
+    steps:
+      - OUT: deploy-ecs-basic-image
+
+  - name: deploy-ecs-basic-manifest
+    type: manifest
+    steps:
+     - IN: deploy-ecs-basic-image
+     - IN: deploy-ecs-basic-docker-options
+     - IN: deploy-ecs-basic-params
+     - IN: deploy-ecs-basic-replicas
+
+  - name: deploy-ecs-basic-deploy
+    type: deploy
+    steps:
+      - IN: deploy-ecs-basic-manifest
+      - IN: deploy-ecs-basic-ecs-cluster
+      - TASK: managed
+        deployMethod: replace
