@@ -1,17 +1,17 @@
-FROM golang:1.11.0-stretch as builder
+FROM golang
 
-WORKDIR /go-modules
+ENV GO111MODULE=on
 
-COPY . ./
+WORKDIR /app
 
-# Building using -mod=vendor, which will utilize the v
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o app
+COPY go.mod .
+COPY go.sum .
 
-FROM alpine:3.8
+RUN go mod download
 
-WORKDIR /root/
+COPY . .
 
-COPY --from=builder /go-modules/app .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
-CMD ["./app"]
 EXPOSE 3000
+ENTRYPOINT ["/app"]

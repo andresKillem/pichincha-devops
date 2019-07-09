@@ -11,18 +11,6 @@ type TodoOperations interface {
 	Delete(id string) bool
 }
 
-/*
-
-Using the import like this "github.com/bixlabs/go-layout/business/structures" (without the dot) this is how you will have to reference the To_do struct:
-
-type TodoOperations interface {
-	create(todo structures.Todo) structures.Todo
-}
-
-*/
-
-// TODO: open to discussion, I'm not sure where the implementation should be.
-
 type TodoOperationsHandler struct{}
 
 func NewTodoOperationsHandler() TodoOperationsHandler {
