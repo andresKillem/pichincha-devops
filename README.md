@@ -1,5 +1,6 @@
 ## DevOps Assessment
-
+* Golang microservice, dockerized and deployed on ECS with Kubernets cluster
+* For the CI I used Shippable
 
 # Requirements
 * go 1.9 or higher.
