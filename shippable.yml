@@ -1,0 +1,102 @@
+
+language: go
+
+go:
+  - 1.11.5
+
+env:
+  global:
+    # AWS credentials
+    - secure: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRFNU1EY3dPREEzTkRVd09Gb1hEVEk1TURjd05UQTNORFV3T0Zvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTEZOCmMwdUpWQS9jTm4rVCsvSDF4Rm52S2NoNFR3UDhJL3ZWNTlidVB3OXFjUWJqRHl4bWtnM1dTUFdtM3pDY3h0aVkKa1JvTDI2R0U5Qlo2MURGT1VpWlpFS3djeFRqTHV0R0lDTXYwUUtManRwSVIyWXdUTHEzc1VPMkRuZ0tGaVJsbApTUUdCWTlvZU1UUGFsY1gxMHRBR3Q3dkRlTk5PMGRmNHBrNVF0L3EyeHVxR00wMVA4WHkxWnZEMGZPbDlVc2MyCktmam1oYTRuL2wyNGZIK1BDbDRsdmxsTGJrczF0LzJRdlhtRnVUNHNPUEZaWlhVTGM3UGlva3BkdTNCOFdiR3MKTkVBbGM4QVZ2OWNTaUxKYnQ1UjdHamx2QjBjUXZKdjZSa0hrWE9ydmFhYkNodEpUMk4wa1pwR1JoOWdMb2wybgphTHdvSVFtVHBxUEwvQUt4YjVjQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFFTThtNW4wN1dvNDRQNmtySENLR05Ra3JOTzEKWVR2MFN0eE54N1gySTRQQnVwQldnN01ZZnFmUXQxaVNiU0k0ejYwL1d0N2YrTkRVdVI2bXh5RDBVN2JhZkV5ZQpDUzRIOXRSVk1sM1VzNi9WU2RDajh2Vmg4aG15aWpKNkQzZVZtZUtNTnBsZUQxbVBsMUdjSVNHT2NlTkdjZUlkCmJEVWpJMDJkOGxxeGdDdFVuZ3BXam1aTThkVWQvUEZIQVl4VGlrVUFhbyt2VFFFekVLaHlhQ0dBcGxFbnduWXkKSlNZL0tuK3BQelFmdVl4akNGallvRWo4WHBJY2JJN2pNQWR4ajQ2OE1uc2dQSUpUamFERG85L1R6S2RCbHEwMwpVazhTdnVLczF1ZUdneU5pWk5kM21iZ0lNUVdGSVl5L3BTOHY3RlB6ekdrWCtqR2txU2xkays5LzhYcz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+
+build:
+  ci:
+    - cat /etc/lsb-releasXe
+    - export GO111MODULE=on
+    - make
+    - make build
+    - make run
+#    - go vet
+#    - go build -v
+    - mkdir -p shippable/testresults
+    - go get -u github.com/jstemmer/go-junit-report
+    - mkdir -p shippable/codecoverage
+    - go get github.com/t-yuki/gocover-cobertura
+    - gocover-cobertura < coverage.out > shippable/codecoverage/coverage.xml
+
+
+  # http://docs.shippable.com/ci/shippableyml/#post_ci
+  post_ci:
+    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
+    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
+    - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
+
+
+
+integrations:
+  # adding awsKeys integration so that credentials are available to CI Job
+  # http://docs.shippable.com/platform/integration/aws-keys/
+  hub:
+    - integrationName: dr-aws-keys
+      type: amazonKeys
+
+
+resources:
+  - name: deploy-ecs-basic-image
+    type: image
+    integration: dr-aws-keys
+    pointer:
+      sourceName: "300519856611.dkr.ecr.us-east-2.amazonaws.com/pichincha"
+    seed:
+      versionName: "latest"
+
+  - name: deploy-ecs-basic-params
+    type: params
+    version:
+      params:
+        PORT: 3000
+        ENVIRONMENT: "dev"
+
+  - name: deploy-ecs-basic-docker-options
+    type: dockerOptions
+    versionTemplate:
+      linuxParameters:
+        initProcessEnabled: true
+      memory: 100
+      portMappings:
+        - 3000:3000
+
+  - name: deploy-ecs-basic-replicas
+    type: replicas
+    version:
+      count: 1
+
+  - name: deploy-ecs-basic-ecs-cluster
+    type: cluster
+    integration: dr-aws-keys
+    pointer:
+      sourceName : "deploy-ecs-basic"
+      region: "us-east-2"
+
+
+jobs:
+  - name: deploy-ecs-basic_runCI
+    type: runCI
+    steps:
+      - OUT: deploy-ecs-basic-image
+
+  - name: deploy-ecs-basic-manifest
+    type: manifest
+    steps:
+     - IN: deploy-ecs-basic-image
+     - IN: deploy-ecs-basic-docker-options
+     - IN: deploy-ecs-basic-params
+     - IN: deploy-ecs-basic-replicas
+
+  - name: deploy-ecs-basic-deploy
+    type: deploy
+    steps:
+      - IN: deploy-ecs-basic-manifest
+      - IN: deploy-ecs-basic-ecs-cluster
+      - TASK: managed
+        deployMethod: replace
