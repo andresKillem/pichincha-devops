@@ -16,10 +16,9 @@ build:
     - make all
   post_ci:
      - $(aws ecr get-login --no-include-email --region us-east-2)
-     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t go-layout .; fi'
-     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker tag go-layout $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
+     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
-     - docker run -p 3000:3000 go-layout .
+ #    - docker run -p 3000:3000 $ECR_REPO:$BRANCH.$BUILD_NUMBER
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
 
 integrations:
