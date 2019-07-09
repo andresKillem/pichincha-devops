@@ -22,7 +22,7 @@ build:
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t go-layout .; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker tag go-layout $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
-     - docker run -p 3000:3000 $ECR_REPO:$BRANCH.$BUILD_NUMBER
+     - docker run -p 3000:3000 $ECR_REPO:$BRANCH.$BUILD_NUMBER .
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
 
 integrations:
