@@ -18,14 +18,11 @@ build:
     - make run
 #    - go vet
 #    - go build -v
-    - mkdir -p shippable/testresults
-    - go get -u github.com/jstemmer/go-junit-report
-    - mkdir -p shippable/codecoverage
-    - go get github.com/t-yuki/gocover-cobertura
-    - gocover-cobertura < coverage.out > shippable/codecoverage/coverage.xml
-
-
-  # http://docs.shippable.com/ci/shippableyml/#post_ci
+#    - mkdir -p shippable/testresults
+#    - go get -u github.com/jstemmer/go-junit-report
+#    - mkdir -p shippable/codecoverage
+#    - go get github.com/t-yuki/gocover-cobertura
+#    - gocover-cobertura < coverage.out > shippable/codecoverage/coverage.xml
   post_ci:
     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
@@ -34,8 +31,6 @@ build:
 
 
 integrations:
-  # adding awsKeys integration so that credentials are available to CI Job
-  # http://docs.shippable.com/platform/integration/aws-keys/
   hub:
     - integrationName: dr-aws-keys
       type: amazonKeys
