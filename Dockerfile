@@ -11,7 +11,6 @@ RUN go mod download
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./tmp/web-server ./cmd/api/main.go
-RUN make all
 
 EXPOSE 3000
 ENTRYPOINT ["/app/go-layout/cmd/api"]
