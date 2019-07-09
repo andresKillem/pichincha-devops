@@ -13,16 +13,9 @@ build:
   ci:
     - export GO111MODULE=on
     - make all
-#    - go vet
-#    - go build -v
-#    - mkdir -p shippable/testresults
-#    - go get -u github.com/jstemmer/go-junit-report
-#    - mkdir -p shippable/codecoverage
-#    - go get github.com/t-yuki/gocover-cobertura
-#    - gocover-cobertura < coverage.out > shippable/codecoverage/coverage.xml
   post_ci:
     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
-    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
+#    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
     - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
 
 
