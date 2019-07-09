@@ -7,8 +7,8 @@ go:
 env:
   global:
     # AWS credentials
-    - secure: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRFNU1EY3dPREEzTkRVd09Gb1hEVEk1TURjd05UQTNORFV3T0Zvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTEZOCmMwdUpWQS9jTm4rVCsvSDF4Rm52S2NoNFR3UDhJL3ZWNTlidVB3OXFjUWJqRHl4bWtnM1dTUFdtM3pDY3h0aVkKa1JvTDI2R0U5Qlo2MURGT1VpWlpFS3djeFRqTHV0R0lDTXYwUUtManRwSVIyWXdUTHEzc1VPMkRuZ0tGaVJsbApTUUdCWTlvZU1UUGFsY1gxMHRBR3Q3dkRlTk5PMGRmNHBrNVF0L3EyeHVxR00wMVA4WHkxWnZEMGZPbDlVc2MyCktmam1oYTRuL2wyNGZIK1BDbDRsdmxsTGJrczF0LzJRdlhtRnVUNHNPUEZaWlhVTGM3UGlva3BkdTNCOFdiR3MKTkVBbGM4QVZ2OWNTaUxKYnQ1UjdHamx2QjBjUXZKdjZSa0hrWE9ydmFhYkNodEpUMk4wa1pwR1JoOWdMb2wybgphTHdvSVFtVHBxUEwvQUt4YjVjQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFFTThtNW4wN1dvNDRQNmtySENLR05Ra3JOTzEKWVR2MFN0eE54N1gySTRQQnVwQldnN01ZZnFmUXQxaVNiU0k0ejYwL1d0N2YrTkRVdVI2bXh5RDBVN2JhZkV5ZQpDUzRIOXRSVk1sM1VzNi9WU2RDajh2Vmg4aG15aWpKNkQzZVZtZUtNTnBsZUQxbVBsMUdjSVNHT2NlTkdjZUlkCmJEVWpJMDJkOGxxeGdDdFVuZ3BXam1aTThkVWQvUEZIQVl4VGlrVUFhbyt2VFFFekVLaHlhQ0dBcGxFbnduWXkKSlNZL0tuK3BQelFmdVl4akNGallvRWo4WHBJY2JJN2pNQWR4ajQ2OE1uc2dQSUpUamFERG85L1R6S2RCbHEwMwpVazhTdnVLczF1ZUdneU5pWk5kM21iZ0lNUVdGSVl5L3BTOHY3RlB6ekdrWCtqR2txU2xkays5LzhYcz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
     - ECR_REPO=300519856611.dkr.ecr.us-east-2.amazonaws.com/pichincha
+    - PASS_AWS=EAlateral2019
 build:
   ci:
     - export GO111MODULE=on
@@ -17,8 +17,7 @@ build:
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
-     - 'if [ $IS_PULL_REQUEST == "false" ] ; then $(aws ecr get-login --no-include-email --region us-east-2) ; fi'
-     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker login -u AWS -p EAlateral2019 https://300519856611.dkr.ecr.us-east-2.amazonaws.com ; fi'
+     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker login -u AWS --password-stdin $PASS_AWS https://300519856611.dkr.ecr.us-east-2.amazonaws.com ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t pichincha .; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker tag pichincha $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
