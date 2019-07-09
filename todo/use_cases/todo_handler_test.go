@@ -66,15 +66,5 @@ func Test(t *testing.T) {
 			result := operationHandler.Delete(id)
 			g.Assert(true).Equal(result)
 		})
-
-		// We can use describe inside of other describes
-		g.Describe("A Failing case", func() {
-			// Failing Test
-			g.It("Should delete a todo", func() {
-				id := "1"
-				result := operationHandler.Delete(id)
-				g.Assert(false).Equal(result)
-			})
-		})
 	})
 }
