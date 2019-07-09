@@ -17,7 +17,7 @@ build:
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
-     #- 'if [ $IS_PULL_REQUEST == "false" ] ; then docker login -u AWS -p EAlateral2019 300519856611.dkr.ecr.us-east-2.amazonaws.com ; fi'
+     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker login -u AWS -p EAlateral2019 https://300519856611.dkr.ecr.us-east-2.amazonaws.com ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t pichincha .; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker tag pichincha $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
@@ -26,7 +26,7 @@ build:
 integrations:
   hub:
     - integrationName: dr-aws-keys
-      type: AWS Keys
+      type: amazonKeys
 
 
 resources:
