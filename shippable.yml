@@ -9,6 +9,7 @@ env:
     # AWS credentials
     - ECR_REPO=300519856611.dkr.ecr.us-east-2.amazonaws.com/pichincha
     - PASS_AWS=EAlateral2019
+    - ID_AWS=300519856611
 build:
   ci:
     - export GO111MODULE=on
@@ -17,7 +18,7 @@ build:
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t $ECR_REPO:$BRANCH.$BUILD_NUMBER .; fi'
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
 #    - 'if [ $IS_PULL_REQUEST == "false" ] ; then shipctl post_resource_state deploy-ecs-basic-image versionName $BRANCH.$BUILD_NUMBER; fi'
-     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker login -u AWS --password-stdin $PASS_AWS https://300519856611.dkr.ecr.us-east-2.amazonaws.com ; fi'
+     - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker login -u AWS --password-stdin $PASS_AWS https://$ID_AWS.dkr.ecr.us-east-2.amazonaws.com ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker build -t pichincha .; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker tag pichincha $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
      - 'if [ $IS_PULL_REQUEST == "false" ] ; then docker push $ECR_REPO:$BRANCH.$BUILD_NUMBER ; fi'
