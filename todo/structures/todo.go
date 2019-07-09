@@ -1,10 +1,8 @@
 package structures
 
-import "time"
-
-type Todo struct {
-	ID          string    `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	DueDate     time.Time `json:"due_date"`
+type MicroMessage struct {
+	Message string    `json:"message"`
+	To      string    `json:"to"`
+	From    string    `json:"from"`
+	TimeToLifeSec int `json:"timeToLifeSec"`
 }

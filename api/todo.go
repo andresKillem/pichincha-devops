@@ -1,12 +1,13 @@
 package api
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	. "github.com/andresKillem/pichincha-devops/todo/structures"
 	. "github.com/andresKillem/pichincha-devops/todo/use_cases"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
 )
 
 type TodoRestConfigurator struct {
@@ -15,73 +16,64 @@ type TodoRestConfigurator struct {
 
 func NewTodoRestConfigurator(handler TodoOperations) {
 	todoOperations := TodoRestConfigurator{handler}
-	// Disable Console Color
-	// gin.DisableConsoleColor()
-
-	// Creates a gin router with default middleware:
-	// logger and recovery (crash-free) middleware
 	router := gin.Default()
-
-	// Content-Type of "application/json" must be used for this endpoint handler
-	router.POST("/todo", todoOperations.createTodo)
-	router.GET("/todo/:id", todoOperations.readTodo)
-	// Content-Type of "application/json" must be used for this endpoint handler
-	router.PUT("/todo", todoOperations.updateTodo)
-	router.DELETE("/todo/:id", todoOperations.deleteTodo)
-
-	// By default it serves on :8080 unless a
-	// PORT environment variable was defined.
+	router.POST("/DevOps", todoOperations.createTodo)
 	router.Run(":3000")
-	// router.Run(":3000") for a hard coded port
 }
 
 
 func (config TodoRestConfigurator) createTodo(c *gin.Context) {
 	var request TodoRequest
-	var todo *Todo
-
 	if err := c.ShouldBind(&request); err == nil {
-		fmt.Printf("%s", request)
-		todo = config.handler.Create(TodoPostToBusinessTodo(request))
-		c.String(http.StatusOK, fmt.Sprintf("Create was successful for TODO with name: %s", todo.Name))
+
+		err := config.verifyApiKey(request, c, err)
+		if err == nil{
+			config.createResponse(request, c)
+		}
+
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 }
 
-func (config TodoRestConfigurator) readTodo(c *gin.Context) {
-	id := c.Param("id")
-	todo := config.handler.Read(id)
-	c.String(http.StatusOK, fmt.Sprintf("Read was successful for TODO with ID: %s", todo.ID))
+func (config TodoRestConfigurator) createResponse(request TodoRequest, c *gin.Context) {
+	var todo *MicroMessage
+	todo = config.handler.Create(TodoPostToBusinessTodo(request))
+	responseMessage := TodoResponse{}
+	responseMessage.Message = fmt.Sprintf("Hello %s your message will be send", todo.To)
+	b, err := json.Marshal(responseMessage)
+	if err != nil {
+		fmt.Println(err)
+	}
+	c.String(http.StatusOK, string(b))
 }
+
+func (config TodoRestConfigurator) verifyApiKey(request TodoRequest, c *gin.Context, err error) error{
+	fmt.Println(request.From)
+	auth := c.GetHeader("X-Parse-REST-API-Key")
+	if auth != "2f5ae96c-b558-4c7b-a590-a501ae1c3f6c" {
+		c.String(http.StatusProxyAuthRequired, "unauthorized")
+		return errors.New("unauthorized")
+	}
+	fmt.Println("With key"+ auth)
+	return nil
+
+}
+
 
 type TodoRequest struct {
-	ID string `json:"i_am"`
-	Name string `json:"title"`
-	Description string `json:"the_rest"`
-	DueDate time.Time `json:"when_finish"`
+	Message string    `json:"message"`
+	To      string    `json:"to"`
+	From    string    `json:"from"`
+	TimeToLifeSec int `json:"timeToLifeSec"`
 }
 
-func TodoPostToBusinessTodo(request TodoRequest) Todo {
-	return Todo{ID: request.ID, Name: request.Name, Description: request.Description, DueDate: request.DueDate}
+type TodoResponse struct {
+	Message string    `json:"message"`
 }
 
-func (config TodoRestConfigurator) updateTodo(c *gin.Context) {
-	var request TodoRequest
-	var todo *Todo
 
-	if c.ShouldBind(&request) == nil {
-		todo = config.handler.Update(TodoPostToBusinessTodo(request))
-	} else {
-		// handle validation case
-	}
-
-	c.String(http.StatusOK, fmt.Sprintf("Update was successful for TODO with name: %s", todo.Name))
-}
-
-func (config TodoRestConfigurator) deleteTodo(c *gin.Context) {
-	id := c.Param("id")
-	success := config.handler.Delete(id)
-	c.String(http.StatusOK, fmt.Sprintf("Delete was successful %t", success))
+func TodoPostToBusinessTodo(request TodoRequest) MicroMessage {
+	return MicroMessage{Message: request.Message, To: request.To, From: request.From, TimeToLifeSec: request.TimeToLifeSec}
 }

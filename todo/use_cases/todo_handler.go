@@ -5,10 +5,7 @@ import (
 )
 
 type TodoOperations interface {
-	Create(todo Todo) *Todo
-	Read(id string) *Todo
-	Update(todo Todo) *Todo
-	Delete(id string) bool
+	Create(todo MicroMessage) *MicroMessage
 }
 
 type TodoOperationsHandler struct{}
@@ -17,22 +14,7 @@ func NewTodoOperationsHandler() TodoOperationsHandler {
 	return TodoOperationsHandler{}
 }
 
-func (handler TodoOperationsHandler) Create(todo Todo) *Todo {
-	println("A Todo was created")
+func (handler TodoOperationsHandler) Create(todo MicroMessage) *MicroMessage {
+	println("A MicroMessage was created")
 	return &todo
-}
-
-func (handler TodoOperationsHandler) Read(id string) *Todo {
-	println("A Todo was retrieved")
-	return &Todo{ID:id}
-}
-
-func (handler TodoOperationsHandler) Update(todo Todo) *Todo {
-	println("A Todo was updated")
-	return &todo
-}
-
-func (handler TodoOperationsHandler) Delete(id string) bool {
-	println("A Todo was deleted")
-	return true
 }

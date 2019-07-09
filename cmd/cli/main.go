@@ -2,16 +2,13 @@
 package main
 
 import (
-	. "github.com/andresKillem/pichincha-devops/todo/use_cases"
 	. "github.com/andresKillem/pichincha-devops/todo/structures"
+	. "github.com/andresKillem/pichincha-devops/todo/use_cases"
 )
 
 func main() {
 	todoOperations := NewTodoOperationsHandler()
 
-	todoOperations.Create(Todo{})
-	todoOperations.Read("1")
-	todoOperations.Update(Todo{})
-	todoOperations.Delete("1")
+	todoOperations.Create(MicroMessage{})
 }
 
