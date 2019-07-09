@@ -9,5 +9,3 @@ func main() {
 	todoOperations := use_cases.NewTodoOperationsHandler()
 	api.NewTodoRestConfigurator(todoOperations)
 }
-
-
