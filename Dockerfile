@@ -1,15 +1,12 @@
-FROM golang:1.11.0-stretch as builder
+FROM golang
 
-WORKDIR /go-modules
+ENV GO111MODULE=on
 
-COPY . ./
+WORKDIR /app
 
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o app
+COPY . .
 
-FROM alpine:3.8
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
-WORKDIR /root/
-
-COPY --from=builder /go-modules/app .
-
-CMD ["./app"]
+EXPOSE 3000
+ENTRYPOINT ["/app/httpserver"]
