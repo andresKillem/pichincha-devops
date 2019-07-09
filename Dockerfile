@@ -1,4 +1,4 @@
-FROM golang:1.11.5-stretch as builder
+FROM golang:1.11.0-stretch as builder
 
 WORKDIR /go-modules
 

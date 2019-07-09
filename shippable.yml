@@ -11,11 +11,8 @@ env:
 
 build:
   ci:
-    - cat /etc/lsb-releasXe
     - export GO111MODULE=on
-    - make
-    - make build
-    - make run
+    - make all
 #    - go vet
 #    - go build -v
 #    - mkdir -p shippable/testresults
