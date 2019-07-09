@@ -1,11 +1,11 @@
 package api
 
 import (
+	"fmt"
+	. "github.com/andresKillem/pichincha-devops/todo/structures"
+	. "github.com/andresKillem/pichincha-devops/todo/use_cases"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	. "github.com/bixlabs/go-layout/todo/use_cases"
-	. "github.com/bixlabs/go-layout/todo/structures"
-	"fmt"
 	"time"
 )
 

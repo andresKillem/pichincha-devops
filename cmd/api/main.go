@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/bixlabs/go-layout/api"
-	"github.com/bixlabs/go-layout/todo/use_cases"
+	"github.com/andresKillem/pichincha-devops/api"
+	"github.com/andresKillem/pichincha-devops/todo/use_cases"
 )
 
 func main() {

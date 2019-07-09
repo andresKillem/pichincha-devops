@@ -1,9 +1,9 @@
 package use_cases
 
 import (
-	"testing"
+	. "github.com/andresKillem/pichincha-devops/todo/structures"
 	. "github.com/franela/goblin"
-	. "github.com/bixlabs/go-layout/todo/structures"
+	"testing"
 )
 
 func Test(t *testing.T) {

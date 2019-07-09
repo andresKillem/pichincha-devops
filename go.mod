@@ -1,4 +1,4 @@
-module github.com/bixlabs/go-layout
+module github.com/andresKillem/pichincha-devops
 
 require (
 	github.com/franela/goblin v0.0.0-20180407132755-cd5d08fb4ede

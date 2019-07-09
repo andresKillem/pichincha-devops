@@ -2,8 +2,8 @@
 package main
 
 import (
-	. "github.com/bixlabs/go-layout/todo/use_cases"
-	. "github.com/bixlabs/go-layout/todo/structures"
+	. "github.com/andresKillem/pichincha-devops/todo/use_cases"
+	. "github.com/andresKillem/pichincha-devops/todo/structures"
 )
 
 func main() {
