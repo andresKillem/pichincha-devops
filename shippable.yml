@@ -8,8 +8,7 @@ env:
   global:
     # AWS credentials
     - ECR_REPO=300519856611.dkr.ecr.us-east-2.amazonaws.com/pichincha
-    - PASS_AWS=EAlateral2019
-    - ID_AWS=300519856611
+
 build:
   ci:
     - export GO111MODULE=on
