@@ -4,7 +4,12 @@
 
 ## Results
 
-
+![alt text](https://github.com/andresKillem/pichincha-devops/blob/master/Images/1.png)
+![alt text](https://github.com/andresKillem/pichincha-devops/blob/master/Images/2.png)
+![alt text](https://github.com/andresKillem/pichincha-devops/blob/master/Images/3.png)
+![alt text](https://github.com/andresKillem/pichincha-devops/blob/master/Images/4.png)
+![alt text](https://github.com/andresKillem/pichincha-devops/blob/master/Images/5.png)
+![alt text](https://github.com/andresKillem/pichincha-devops/blob/master/Images/6.png)
 
 # Requirements
 * go 1.9 or higher.
